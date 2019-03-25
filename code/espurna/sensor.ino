@@ -1405,6 +1405,8 @@ void sensorLoop() {
             bool relay_off = (relayCount() > 0) && (relayStatus(0) == 0);
         #endif
 
+        if (report_count == 0) relayMQTT();
+
         // Get readings
         for (unsigned char i=0; i<_magnitudes.size(); i++) {
 
