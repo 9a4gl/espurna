@@ -1392,7 +1392,8 @@ void sensorLoop() {
     if (millis() - last_update > _sensor_read_interval) {
 
         last_update = millis();
-        report_count = (report_count + 1) % _sensor_report_every;
+        int report_every = (relayStatus(0) == 1 || relayLastUpdateFromNowInMs(0) < 10000) ? 1 : _sensor_report_every;
+        report_count = (report_count + 1) % report_every;
 
         double current;
         double filtered;

@@ -28,6 +28,7 @@ typedef struct {
 
     bool current_status;        // Holds the current (physical) status of the relay
     bool target_status;         // Holds the target status
+    unsigned long last_update;
     unsigned long fw_start;     // Flood window start time
     unsigned char fw_count;     // Number of changes within the current flood window
     unsigned long change_time;  // Scheduled time to change
@@ -54,6 +55,7 @@ void _relayProviderStatus(unsigned char id, bool status) {
 
     // Store new current status
     _relays[id].current_status = status;
+    _relays[id].last_update = millis();
 
     #if RELAY_PROVIDER == RELAY_PROVIDER_RFBRIDGE
         rfbStatus(id, status);
@@ -348,6 +350,14 @@ bool relayStatus(unsigned char id) {
     // Get status from storage
     return _relays[id].current_status;
 
+}
+
+unsigned long relayLastUpdateFromNowInMs(unsigned char id)  {
+
+  // Check relay ID
+  if (id >= _relays.size()) return 0;
+
+  return millis() - _relays[id].last_update;
 }
 
 void relaySync(unsigned char id) {
